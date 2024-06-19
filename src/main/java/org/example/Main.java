@@ -4,14 +4,21 @@ import java.io.*;
 import java.nio.*;
 import java.nio.file.*;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         if (args.length == 0 ) {
-            System.err.println("No argument for cat is given. Please give a filepath as argument.");
+            System.err.println("No argument for cat is given.");
             return;
         } else if (args[0].equals("-")) {
-
+            Scanner scanner = new Scanner(System.in);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                System.out.println(line);
+            }
+            scanner.close();
+            return;
         }
         String fileName = args[0];
         Path filePath = Paths.get(fileName);
