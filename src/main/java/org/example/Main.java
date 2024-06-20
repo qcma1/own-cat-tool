@@ -1,8 +1,9 @@
 package org.example;
 
-import java.io.*;
-import java.nio.*;
-import java.nio.file.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,17 +21,18 @@ public class Main {
             scanner.close();
             return;
         }
-        String fileName = args[0];
-        Path filePath = Paths.get(fileName);
+//        System.out.printf("Number of args = %d\n", args.length);
 
-        try {
-            List<String> fileContents = Files.readAllLines(filePath);
-            for (String fileLine: fileContents) {
-                System.out.println(fileLine);
+        for (String fileName:args) {
+            Path filePath = Paths.get(fileName);
+            try {
+                List<String> fileContents = Files.readAllLines(filePath);
+                for (String fileLine : fileContents) {
+                    System.out.println(fileLine);
+                }
+            } catch (IOException e) {
+                System.err.println("An IOException occurred: " + e.getMessage());
             }
-        } catch (IOException e) {
-            System.err.println("An IOException occurred: " + e.getMessage());
         }
-
     }
 }
