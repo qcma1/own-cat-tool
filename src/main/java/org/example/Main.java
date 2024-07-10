@@ -4,34 +4,100 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        if (args.length == 0 ) {
-            System.err.println("No argument for cat is given.");
-            return;
-        } else if (args[0].equals("-")) {
+//        -n flag
+        boolean showLineNumber = false;
+//        -b flag
+        boolean doNotNumberEmptyLines = false;
+        List<String> fileNames = new ArrayList<>();
+
+        for (String arg:args) {
+            switch (arg) {
+                case "-n":
+                    showLineNumber = true;
+                    break;
+                case "-b":
+                    doNotNumberEmptyLines = true;
+                    break;
+                default:
+                    fileNames.add(arg);
+            }
+        }
+
+        if (fileNames.isEmpty() || fileNames.contains("-")) {
             Scanner scanner = new Scanner(System.in);
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                System.out.println(line);
+            if (showLineNumber && doNotNumberEmptyLines) {
+                int lineNumber = 1;
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    if (line.isEmpty()) {
+                        System.out.println(line);
+                    } else {
+                        System.out.printf("%d %s\n", lineNumber++, line);
+                    }
+                }
+            } else if (showLineNumber){
+                int lineNumber = 1;
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    System.out.printf("%d %s\n", lineNumber++, line);
+                }
+            } else {
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    System.out.println(line);
+                }
             }
             scanner.close();
             return;
         }
-//        System.out.printf("Number of args = %d\n", args.length);
 
-        for (String fileName:args) {
-            Path filePath = Paths.get(fileName);
-            try {
-                List<String> fileContents = Files.readAllLines(filePath);
-                for (String fileLine : fileContents) {
-                    System.out.println(fileLine);
+        if (showLineNumber && doNotNumberEmptyLines) {
+            int lineNumber = 1;
+            for (String fileName:fileNames) {
+                Path filePath = Paths.get(fileName);
+                try {
+                    List<String> fileContents = Files.readAllLines(filePath);
+                    for (String fileLine : fileContents) {
+                        if (fileLine.isEmpty()) {
+                            System.out.println(fileLine);
+                        } else {
+                            System.out.printf("%d %s\n", lineNumber++, fileLine);
+                        }
+                    }
+                } catch (IOException e) {
+                    System.err.println("An IOException occurred: " + e.getMessage());
                 }
-            } catch (IOException e) {
-                System.err.println("An IOException occurred: " + e.getMessage());
+            }
+        } else if (showLineNumber) {
+            int lineNumber = 1;
+            for (String fileName:fileNames) {
+                Path filePath = Paths.get(fileName);
+                try {
+                    List<String> fileContents = Files.readAllLines(filePath);
+                    for (String fileLine : fileContents) {
+                        System.out.printf("%d %s\n", lineNumber++, fileLine);
+                    }
+                } catch (IOException e) {
+                    System.err.println("An IOException occurred: " + e.getMessage());
+                }
+            }
+        } else {
+            for (String fileName:fileNames) {
+                Path filePath = Paths.get(fileName);
+                try {
+                    List<String> fileContents = Files.readAllLines(filePath);
+                    for (String fileLine : fileContents) {
+                        System.out.println(fileLine);
+                    }
+                } catch (IOException e) {
+                    System.err.println("An IOException occurred" + e.getMessage());
+                }
             }
         }
     }
