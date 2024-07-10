@@ -11,18 +11,18 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 //        -n flag
-        boolean showLineNumber = false;
+        boolean numberEveryLine = false;
 //        -b flag
-        boolean doNotNumberEmptyLines = false;
+        boolean numberNonBlankLinesOnly = false;
         List<String> fileNames = new ArrayList<>();
 
         for (String arg:args) {
             switch (arg) {
                 case "-n":
-                    showLineNumber = true;
+                    numberEveryLine = true;
                     break;
                 case "-b":
-                    doNotNumberEmptyLines = true;
+                    numberNonBlankLinesOnly = true;
                     break;
                 default:
                     fileNames.add(arg);
@@ -31,7 +31,7 @@ public class Main {
 
         if (fileNames.isEmpty() || fileNames.contains("-")) {
             Scanner scanner = new Scanner(System.in);
-            if (showLineNumber && doNotNumberEmptyLines) {
+            if (numberNonBlankLinesOnly) {
                 int lineNumber = 1;
                 while (scanner.hasNextLine()) {
                     String line = scanner.nextLine();
@@ -41,7 +41,7 @@ public class Main {
                         System.out.printf("%d %s\n", lineNumber++, line);
                     }
                 }
-            } else if (showLineNumber){
+            } else if (numberEveryLine){
                 int lineNumber = 1;
                 while (scanner.hasNextLine()) {
                     String line = scanner.nextLine();
@@ -57,7 +57,7 @@ public class Main {
             return;
         }
 
-        if (showLineNumber && doNotNumberEmptyLines) {
+        if (numberNonBlankLinesOnly) {
             int lineNumber = 1;
             for (String fileName:fileNames) {
                 Path filePath = Paths.get(fileName);
@@ -74,7 +74,7 @@ public class Main {
                     System.err.println("An IOException occurred: " + e.getMessage());
                 }
             }
-        } else if (showLineNumber) {
+        } else if (numberEveryLine) {
             int lineNumber = 1;
             for (String fileName:fileNames) {
                 Path filePath = Paths.get(fileName);
